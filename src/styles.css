@@ -42,9 +42,16 @@ h1 { font-size: clamp(2rem, 8vw, 3rem); line-height: 1.05; margin: .25rem 0; }
   background: linear-gradient(135deg, #E91E63, #ff7aa1); color: #fff; text-decoration: none; display: inline-flex; justify-content: center;
 }
 .primary-button:hover, .ghost-button:hover, .chip:hover { transform: translateY(-1px); }
-.feature-grid, .stats-grid { display: grid; gap: 1rem; }
+.feature-grid, .stats-grid, .info-grid { display: grid; gap: 1rem; }
 .feature-grid { grid-template-columns: 1fr; }
+.info-grid { grid-template-columns: 1fr; }
 .mini-card { padding: 1rem; }
+.payment-card, .contact-card { padding: 1rem; text-align: left; }
+.pix-box { display: grid; gap: .9rem; align-items: center; justify-items: center; padding: .9rem; border-radius: 18px; background: #fff7fa; border: 1px solid #f3c3d7; }
+.qr-wrap { display: grid; place-items: center; background: #fff; padding: .6rem; border-radius: 18px; border: 1px solid #f1dbe6; }
+.pix-details { display: grid; gap: .2rem; text-align: center; }
+.pix-details strong { color: #E91E63; }
+.whatsapp-button { display: inline-flex; justify-content: center; align-items: center; gap: .5rem; padding: .9rem 1rem; border-radius: 999px; background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; text-decoration: none; font-weight: 700; }
 .form-card { padding: 1rem; }
 .form-grid { display: grid; gap: .9rem; }
 label, fieldset { display: grid; gap: .35rem; font-weight: 600; color: #444; }
@@ -79,6 +86,9 @@ textarea { min-height: 130px; resize: vertical; }
   .topbar { padding: 1.2rem 0; }
   .feature-grid { grid-template-columns: repeat(3, 1fr); }
   .stats-grid { grid-template-columns: repeat(5, 1fr); }
+  .info-grid { grid-template-columns: repeat(2, 1fr); }
+  .pix-box { grid-template-columns: auto 1fr; justify-items: start; text-align: left; }
+  .pix-details { text-align: left; }
   .hero-card { padding: 2rem; }
   .form-card, .admin-card { padding: 1.4rem; }
 }
