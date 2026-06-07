@@ -47,7 +47,9 @@ h1 { font-size: clamp(2rem, 8vw, 3rem); line-height: 1.05; margin: .25rem 0; }
 .info-grid { grid-template-columns: 1fr; }
 .mini-card { padding: 1rem; }
 .payment-card, .contact-card { padding: 1rem; text-align: left; }
+.compact-card { margin-top: .5rem; }
 .pix-box { display: grid; gap: .9rem; align-items: center; justify-items: center; padding: .9rem; border-radius: 18px; background: #fff7fa; border: 1px solid #f3c3d7; }
+.compact-pix-box { grid-template-columns: 1fr; }
 .qr-wrap { display: grid; place-items: center; background: #fff; padding: .6rem; border-radius: 18px; border: 1px solid #f1dbe6; }
 .pix-details { display: grid; gap: .2rem; text-align: center; }
 .pix-details strong { color: #E91E63; }

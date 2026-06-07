@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
 import { sendMessage } from '../services/supabase';
 import { containsForbiddenTerms } from '../utils/moderation';
 
@@ -12,6 +13,7 @@ export default function ComposePage() {
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showPaymentInfo, setShowPaymentInfo] = useState(false);
 
   const charsLeft = useMemo(() => 250 - message.length, [message.length]);
 
@@ -19,6 +21,7 @@ export default function ComposePage() {
     event.preventDefault();
     setError('');
     setFeedback('');
+    setShowPaymentInfo(false);
 
     if (!recipientName.trim()) {
       setError('Digite o nome do destinatário para continuar.');
@@ -56,7 +59,8 @@ export default function ComposePage() {
         mensagem: message.trim(),
       });
 
-      setFeedback('Mensagem enviada com sucesso! Ela será analisada pela organização da gincana.');
+      setFeedback('Mensagem enviada com sucesso! Para a leitura ser autorizada, efetue o pagamento via PIX com a comissão.');
+      setShowPaymentInfo(true);
       setRecipientName('');
       setIdentification('identified');
       setSenderName('');
@@ -110,6 +114,24 @@ export default function ComposePage() {
 
           {error && <p className="alert error">{error}</p>}
           {feedback && <p className="alert success">{feedback}</p>}
+
+          {showPaymentInfo && (
+            <article className="payment-card compact-card">
+              <p className="eyebrow">Autorização via PIX</p>
+              <h2>Finalize o pagamento para liberar a leitura</h2>
+              <p className="lead">A mensagem ficará pendente até a confirmação do pagamento feito para a comissão organizadora.</p>
+              <div className="pix-box compact-pix-box">
+                <div className="qr-wrap">
+                  <QRCodeSVG value="PIX:93991574982" size={150} includeMargin />
+                </div>
+                <div className="pix-details">
+                  <strong>Chave PIX</strong>
+                  <p>(93) 99157-4982</p>
+                  <span className="small-note">Após o pagamento, a comissão confirma a autorização da mensagem.</span>
+                </div>
+              </div>
+            </article>
+          )}
 
           <button className="primary-button" type="submit" disabled={submitting}>{submitting ? 'Enviando...' : 'Enviar Mensagem'}</button>
         </form>
