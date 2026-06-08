@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { sendMessage, updateMessageStatus } from '../services/supabase';
+import { hasGoogleSheetsIntegration, saveApprovedMessageToSheet } from '../services/googleSheets';
 import { containsForbiddenTerms } from '../utils/moderation';
 
 export default function ComposePage() {
@@ -59,20 +60,7 @@ export default function ComposePage() {
 
           // 2. Post to Google Sheets
           try {
-            await fetch(googleSheetsUrl, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                id: messageRecord.id,
-                destinatario: messageRecord.destinatario,
-                remetente: messageRecord.remetente || 'Anônimo',
-                anonimo: messageRecord.anonimo,
-                autoriza_revelacao: messageRecord.autoriza_revelacao,
-                mensagem: messageRecord.mensagem,
-                status: 'Aprovada'
-              })
-            });
+            await saveApprovedMessageToSheet({ ...messageRecord, status: 'Aprovada' });
           } catch (e) {
             console.error('Erro ao salvar cópia na planilha:', e);
           }
@@ -142,7 +130,7 @@ export default function ComposePage() {
       const googleSheetsUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
       const messagePrice = import.meta.env.VITE_MESSAGE_PRICE || '2.00';
 
-      if (googleSheetsUrl && googleSheetsUrl !== 'https://script.google.com/macros/s/SUA_URL_DO_WEB_APP/exec') {
+      if (hasGoogleSheetsIntegration()) {
         setPixStatus('generating');
         
         try {

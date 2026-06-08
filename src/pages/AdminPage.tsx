@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import { deleteMessage, loadMessages, updateMessageStatus } from '../services/supabase';
+import { saveApprovedMessageToSheet } from '../services/googleSheets';
 import type { MessageRecord } from '../types';
 
 const ADMIN_PASSWORD = 'tadsledoc2026';
@@ -45,8 +46,18 @@ export default function AdminPage() {
   }
 
   async function handleStatusChange(id: string, status: MessageRecord['status']) {
+    const currentMessage = messages.find((item) => item.id === id);
+
     await updateMessageStatus(id, status);
     setMessages((prev) => prev.map((item) => item.id === id ? { ...item, status } : item));
+
+    if (status === 'Aprovada' && currentMessage && currentMessage.status !== 'Aprovada') {
+      try {
+        await saveApprovedMessageToSheet({ ...currentMessage, status });
+      } catch (error) {
+        console.error('Erro ao salvar copia na planilha:', error);
+      }
+    }
   }
 
   async function handleDelete(id: string) {
