@@ -49,6 +49,28 @@ export default function HomePage() {
           <p className="small-note">Os recados serão lidos no intervalo do dia 11/06.</p>
         </article>
       </section>
+
+      <section className="info-grid">
+        <article className="card price-card">
+          <p className="eyebrow">Tabela de preços</p>
+          <h2>Valor das mensagens</h2>
+          <div className="price-table">
+            <div className="price-row">
+              <span>Mensagem simples</span>
+              <strong>R$ 2,00</strong>
+            </div>
+            <div className="price-row">
+              <span>Mensagem com chocolate</span>
+              <strong>R$ 5,00</strong>
+            </div>
+            <div className="price-row">
+              <span>Mensagem com flor</span>
+              <strong>R$ 7,00</strong>
+            </div>
+          </div>
+          <p className="small-note">Na página de envio, escolha uma das opções e o PIX será gerado com o valor do produto escolhido.</p>
+        </article>
+      </section>
     </main>
   );
 }

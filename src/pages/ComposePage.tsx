@@ -15,6 +15,16 @@ export default function ComposePage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showPaymentInfo, setShowPaymentInfo] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<'simple' | 'chocolate' | 'flor'>('simple');
+
+  const productOptions = [
+    { id: 'simple', label: 'Mensagem simples', description: 'R$ 2,00', price: 2 },
+    { id: 'chocolate', label: 'Mensagem com chocolate', description: 'R$ 5,00', price: 5 },
+    { id: 'flor', label: 'Mensagem com flor', description: 'R$ 7,00', price: 7 },
+  ] as const;
+
+  const selectedProduct = productOptions.find((item) => item.id === selectedOption) ?? productOptions[0];
+  const selectedPrice = selectedProduct.price;
 
   // Mercado Pago Payment States
   const [pixQrCode, setPixQrCode] = useState('');
@@ -128,7 +138,7 @@ export default function ComposePage() {
       setShowPaymentInfo(true);
 
       const googleSheetsUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
-      const messagePrice = import.meta.env.VITE_MESSAGE_PRICE || '2.00';
+      const messagePrice = selectedPrice.toFixed(2);
 
       if (hasGoogleSheetsIntegration()) {
         setPixStatus('generating');
@@ -142,7 +152,7 @@ export default function ComposePage() {
             setPixQrCodeUrl(json.qr_code_base64 ? `data:image/png;base64,${json.qr_code_base64}` : `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(json.qr_code)}`);
             setPixPaymentId(json.payment_id);
             setPixStatus('waiting');
-            setFeedback('Mensagem criada! Pague o PIX abaixo para autorizar o envio automático.');
+            setFeedback(`${selectedProduct.label} selecionado. Pague R$ ${messagePrice} no PIX abaixo para autorizar o envio.`);
             
             // Start listening for payments
             startPaymentPolling(json.payment_id, createdMessage);
@@ -158,12 +168,13 @@ export default function ComposePage() {
       } else {
         // Fallback to manual static Pix (original flow)
         setPixStatus('idle');
-        setFeedback('Mensagem enviada com sucesso! Para a leitura ser autorizada, efetue o pagamento via PIX com a comissão.');
+        setFeedback(`Mensagem enviada! Pague R$ ${messagePrice} via PIX com a comissão para liberar a leitura.`);
       }
 
       setRecipientName('');
       setIdentification('identified');
       setSenderName('');
+      setSelectedOption('simple');
       setMessage('');
       setConsent(false);
     } catch (err) {
@@ -199,6 +210,22 @@ export default function ComposePage() {
             </label>
           )}
 
+          <fieldset>
+            <legend>Escolha o produto</legend>
+            {productOptions.map((option) => (
+              <label key={option.id} className="radio-row">
+                <input
+                  type="radio"
+                  name="product"
+                  value={option.id}
+                  checked={selectedOption === option.id}
+                  onChange={() => setSelectedOption(option.id)}
+                />
+                <span>{option.label} — <strong>{option.description}</strong></span>
+              </label>
+            ))}
+          </fieldset>
+
           <label>
             Mensagem
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} maxLength={250} rows={6} placeholder="Escreva sua mensagem aqui..." />
@@ -230,7 +257,7 @@ export default function ComposePage() {
                 <div>
                   <h2 style={{ fontSize: '18px', margin: '0 0 8px 0' }}>Escaneie para enviar a mensagem</h2>
                   <p className="lead" style={{ fontSize: '13.5px', marginBottom: '1.2rem', color: '#555' }}>
-                    O pagamento é identificado na hora. Assim que aprovado, a mensagem será autorizada automaticamente.
+                    {selectedProduct.label} — <strong>R$ {selectedPrice.toFixed(2)}</strong>. O pagamento é identificado na hora e, assim que aprovado, a mensagem será liberada.
                   </p>
                   <div className="pix-box compact-pix-box" style={{ padding: '1rem', background: '#fff7fa', border: '1px solid #f3c3d7', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                     <div className="qr-wrap" style={{ background: '#fff', padding: '10px', borderRadius: '12px', border: '1px solid #f1dbe6' }}>
@@ -282,7 +309,7 @@ export default function ComposePage() {
                   </p>
                   <div className="pix-box compact-pix-box">
                     <div className="qr-wrap">
-                      <QRCodeSVG value="PIX:93991574982" size={150} includeMargin />
+                      <QRCodeSVG value={`PIX:93991574982?amount=${selectedPrice.toFixed(2)}`} size={150} includeMargin />
                     </div>
                     <div className="pix-details">
                       <strong>Chave PIX</strong>
