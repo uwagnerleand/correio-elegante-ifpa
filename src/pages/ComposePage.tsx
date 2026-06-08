@@ -267,7 +267,7 @@ export default function ComposePage() {
                           Copiar
                         </button>
                       </div>
-                      <div style={{ display: 'flex', alignPage: 'center', gap: '8px', marginTop: '10px', color: '#E91E63', fontWeight: 'bold', fontSize: '13px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', color: '#E91E63', fontWeight: 'bold', fontSize: '13px' }}>
                         <span style={{ display: 'inline-block', width: 8, height: 8, background: '#E91E63', borderRadius: '50%', animation: 'pulse 1.5s infinite', alignSelf: 'center' }}></span>
                         Aguardando pagamento no banco...
                       </div>
