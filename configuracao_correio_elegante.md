@@ -116,7 +116,7 @@ function checkPaymentStatus(paymentId) {
   })).setMimeType(ContentService.MimeType.JSON);
 }
 ```
-
+ 
 3. Clique em **Salvar 💾**.
 4. No menu lateral esquerdo, clique na **Engrenagem ⚙️ (Configurações do Projeto)**.
 5. Role até **Propriedades do script** e adicione:
